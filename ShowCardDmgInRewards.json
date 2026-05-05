@@ -1,0 +1,11 @@
+{
+  "id": "ShowCardDmgInRewards",
+  "name": "ShowCardDmgInRewards",
+  "author": "PhantomGamers",
+  "description": "Show how much dmg a card would do before picking it if it depends on other cards in your deck",
+  "version": "v1.0.0",
+  "has_pck": false,
+  "has_dll": true,
+  "dependencies": [],
+  "affects_gameplay": false
+}

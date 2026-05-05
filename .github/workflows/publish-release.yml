@@ -1,0 +1,62 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 9.0.x
+          
+      - name: Restore dependencies
+        run: dotnet restore
+        
+      - name: Build
+        run: dotnet build --no-restore -c "ExportRelease"
+        
+      - name: Zip
+        run: cd bin &&
+             zip -r ../ShowCardDmgInRewards.zip ./ShowCardDmgInRewards/*
+        
+      - name: Extract latest changelog section
+        id: changelog
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          BODY=$(awk -v ver="$VERSION" '
+            $0 ~ "^"ver":" {flag=1; next}
+            flag && /^[0-9]+\.[0-9]+\.[0-9]+:/ {flag=0}
+            flag {print}
+          ' CHANGELOG.md)
+          BODY="$(echo "$BODY" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$BODY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+            
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
+        with:
+          files: ShowCardDmgInRewards.zip
+          fail_on_unmatched_files: true
+          body: ${{ steps.changelog.outputs.body }}
+
+      - name: Upload to NexusMods
+        uses: Nexus-Mods/upload-action@main
+        with:
+          api_key: ${{ secrets.NEXUSMODS_API_KEY }}
+          file_group_id: ${{ vars.NEXUSMODS_FILE_GROUP_ID }}
+          filename: ShowCardDmgInRewards.zip
+          version: ${{ github.ref_name }}
+          display_name: ShowCardDmgInRewards
+          description: ${{ steps.changelog.outputs.body }}
+          file_category: main
