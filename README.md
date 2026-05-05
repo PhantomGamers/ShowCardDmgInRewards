@@ -9,6 +9,11 @@ Currently applies to the following cards in vanilla:
 
 The value shown does not include the card itself, if it were to also scale the dmg (not applicable to Squeeze). This would be easy to change but I'm not sure if it would be more intuitive to include that.
 
+Applies to:
+- Card Rewards
+- Merchant
+- Deck button on top UI
+
 ## Installation
 
 ### Vortex
