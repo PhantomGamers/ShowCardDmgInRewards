@@ -60,3 +60,5 @@ jobs:
           display_name: ShowCardDmgInRewards
           description: ${{ steps.changelog.outputs.body }}
           file_category: main
+          primary_mod_manager_download: true
+          allow_mod_manager_download: true
