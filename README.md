@@ -2,6 +2,13 @@
 
 Show how much dmg a card would do before picking it if it depends on other cards in your deck in the game Slay the Spire 2  
 
+Currently applies to the following cards in vanilla:
+- Perfected Strike (Scales with cards in deck containing Strike)
+- Crescent Spear (Scales with cards in deck with star cost)
+- Squeeze (Scales with *other* cards in deck that are osty attacks)
+
+The value shown does not include the card itself, if it were to also scale the dmg (not applicable to Squeeze). This would be easy to change but I'm not sure if it would be more intuitive to include that.
+
 ## Installation
 
 ### Vortex
