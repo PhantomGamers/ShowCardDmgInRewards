@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
-using MegaCrit.Sts2.Core.Combat;
+using JetBrains.Annotations;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
@@ -11,9 +11,11 @@ using MegaCrit.Sts2.Core.Nodes;
 namespace ShowCardDmgInRewards.ShowCardDmgInRewardsCode;
 
 [HarmonyPatch]
+[UsedImplicitly]
 public static class CanonicalVarsPatch
 {
     [HarmonyTargetMethod]
+    [UsedImplicitly]
     public static IEnumerable<MethodBase> TargetMethods()
     {
         return (from type in AccessTools.AllTypes()
@@ -35,6 +37,7 @@ public static class CanonicalVarsPatch
     }
 
     [HarmonyTranspiler]
+    [UsedImplicitly]
     public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var list = new List<CodeInstruction>(instructions);
@@ -61,10 +64,12 @@ public static class CanonicalVarsPatch
 }
 
 [HarmonyPatch]
+[UsedImplicitly]
 public class CalculatedVarPatches
 {
-   [HarmonyPatch(typeof(CalculatedVar), nameof(CalculatedVar.Calculate))]
+    [HarmonyPatch(typeof(CalculatedVar), nameof(CalculatedVar.Calculate))]
     [HarmonyPrefix]
+    [UsedImplicitly]
     public static bool CalculatedVarPrefix(CalculatedVar __instance, Creature target, ref decimal __result)
     {
         if (__instance._multiplierCalc == null 
