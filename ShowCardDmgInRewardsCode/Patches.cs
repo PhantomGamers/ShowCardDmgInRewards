@@ -14,6 +14,8 @@ namespace ShowCardDmgInRewards.ShowCardDmgInRewardsCode;
 [UsedImplicitly]
 public static class CanonicalVarsPatch
 {
+    public static readonly List<MethodBase> PatchedMethods = [];
+    
     [HarmonyTargetMethod]
     [UsedImplicitly]
     public static IEnumerable<MethodBase> TargetMethods()
@@ -38,7 +40,7 @@ public static class CanonicalVarsPatch
 
     [HarmonyTranspiler]
     [UsedImplicitly]
-    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase original)
     {
         var list = new List<CodeInstruction>(instructions);
 
@@ -56,6 +58,8 @@ public static class CanonicalVarsPatch
             list[i] = new CodeInstruction(OpCodes.Call, getCards);
             list[i + 1].MakeNop();
             list[i + 2].MakeNop();
+            
+            PatchedMethods.Add(original);
             break;
         }
 
@@ -75,9 +79,20 @@ public class CalculatedVarPatches
         if (__instance._multiplierCalc == null 
             || __instance._owner == null) return true;
         var card = (CardModel)__instance._owner;
+        var cardName = card.GetType().Name;
+        if (CanonicalVarsPatch.PatchedMethods.All(m => cardName != m.DeclaringType?.DeclaringType?.Name)) return true;
         if (card.CombatState != null) return true;
-        var num = __instance._multiplierCalc(card, target);
-        __result = __instance.GetBaseVar().BaseValue + __instance.GetExtraVar().BaseValue * num;
+        decimal d;
+        try
+        {
+            d = __instance._multiplierCalc(card, target);
+        }
+        catch (Exception)
+        {
+            MainFile.Logger.Warn("Encountered error in card " + cardName);
+            d = 0;
+        }
+        __result = __instance.GetBaseVar().BaseValue + __instance.GetExtraVar().BaseValue * d;
         return false;
     }
 }
