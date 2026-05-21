@@ -1,5 +1,8 @@
 ## Changelog
 
+1.0.2:
+- Updated manifest json to fix errors in beta branch
+
 1.0.1:
 - Fixed issue where cards that looked at your hand would error outside of combat (e.g. Expect A Fight)
 
