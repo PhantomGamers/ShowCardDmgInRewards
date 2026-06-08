@@ -18,5 +18,11 @@ public partial class MainFile : Node
         Harmony harmony = new(ModId);
 
         harmony.PatchAll();
+        
+        Logger.Info("Patched cards:");
+        foreach (var m in ShowCardDmgInRewardsCode.CanonicalVarsPatch.PatchedMethods)
+        {
+            Logger.Info(m.DeclaringType?.DeclaringType?.Name ?? "null");
+        }
     }
 }

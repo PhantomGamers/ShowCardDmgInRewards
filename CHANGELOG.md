@@ -1,5 +1,8 @@
 ## Changelog
 
+1.0.3:
+- Possible fix for mod not working with certain non-English languages
+
 1.0.2:
 - Updated manifest json to fix errors in beta branch
 

@@ -26,7 +26,7 @@ public static class CanonicalVarsPatch
             .SelectMany(
                 nested => nested.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public),
                 (nested, m) => new { nested, m })
-            .Where(t => t.m.Name.Contains("<get_CanonicalVars>b__"))
+            .Where(t => t.m.Name.Contains("<get_CanonicalVars>b__", StringComparison.InvariantCultureIgnoreCase))
             .Select(t => t.m);
     }
 
@@ -62,7 +62,7 @@ public static class CanonicalVarsPatch
             PatchedMethods.Add(original);
             break;
         }
-
+        
         return list;
     }
 }
@@ -80,7 +80,7 @@ public class CalculatedVarPatches
             || __instance._owner == null) return true;
         var card = (CardModel)__instance._owner;
         var cardName = card.GetType().Name;
-        if (CanonicalVarsPatch.PatchedMethods.All(m => cardName != m.DeclaringType?.DeclaringType?.Name)) return true;
+        if (CanonicalVarsPatch.PatchedMethods.All(m => !cardName.Equals(m.DeclaringType?.DeclaringType?.Name, StringComparison.InvariantCultureIgnoreCase))) return true;
         if (card.CombatState != null) return true;
         decimal d;
         try
